@@ -1,11 +1,109 @@
+body {
+    background-color: #fffefc;
+}
+
 #video-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 400px);
-    grid-auto-rows: 400px;
+    grid-template-columns: repeat(auto-fill, 300px);
+    grid-auto-rows: 300px;
 }
 
 video {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 5px;
+}
+
+
+#chat-container {
+    overflow: auto;
+    margin-top: 10px;
+    width: 70vw;
+    padding-bottom: 50px;
+}
+
+.header {
+    grid-area: header;
+}
+
+.header h2::after {
+    content: "";
+    width: 5px;
+    height: 5px;
+    background-color: red;
+    vertical-align: bottom;
+    display: inline-block;
+}
+
+.header h1 {
+    font-size: 20vw;
+    margin-top: 0px;
+}
+
+.header h1::after {
+    content: "";
+    width: 2vw;
+    height: 2vw;
+    background-color: red;
+    vertical-align: bottom;
+    display: inline-block;
+}
+
+.menu {
+    grid-area: menu;
+}
+
+.menu ul {
+    list-style: square;
+    line-height: 20px;
+    padding-inline-start: 20px;
+    max-width: 300px;
+}
+
+.right-menu {
+    grid-area: right-menu;
+}
+
+.container {
+    display: grid;
+    grid-template-areas:
+        'header header header header header right-menu'
+        'menu main main main main main'
+        'footer footer footer footer footer footer';
+    gap: 10px;
+    padding: 10px;
+}
+
+.top-nav {
+    list-style: none;
+    display: inline-flex;
+    float: right;
+    margin: 30px;
+}
+
+.top-nav li {
+    margin: 0px 10px;
+}
+
+.top-nav a {
+    text-decoration: none;
+    color: rgba(55, 53, 47, 0.65);
+    cursor: pointer;
+}
+
+.top-nav li:first-child::after {
+    content: "";
+    width: 1px;
+    background: gray;
+    height: 20px;
+    margin: 0 10px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 30px;
+}
+
+.top-message {
+    font-size: 8vw;
+    color: grey;
 }

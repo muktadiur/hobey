@@ -15,6 +15,10 @@ app.get('/', (req, res) => {
   res.redirect(`/${uuidV4()}`);
 });
 
+app.get('/home', (req, res) => {
+  res.render('index');
+});
+
 app.get('/:channel', (req, res) => {
   res.render('channel', { channelId: req.params.room });
 });

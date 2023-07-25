@@ -1,53 +1,66 @@
-const socket = io("/");
-const videoGrid = document.getElementById("video-container");
-const meetVideo = document.createElement("video");
-meetVideo.muted = true;
-const peers = {};
-const meetPeer = new Peer(undefined, {
-  host: window.location.hostname,
-  port: 3001,
-});
+class VideoChat {
+  constructor() {
+    this.socket = io("/");
+    this.videoGrid = document.getElementById("video-container");
+    this.meetVideo = this.createVideoElement(true);
+    this.peers = {};
+    this.meetPeer = new Peer(undefined, {
+      host: window.location.hostname,
+      port: 3001,
+    });
+    this.registerSocketEvents();
+    this.initializeMedia();
+  }
 
-const addVideoStream = (video, stream) => {
-  video.srcObject = stream;
-  video.addEventListener("loadedmetadata", () => video.play());
-  videoGrid.append(video);
-};
-
-const handleCall = (call, stream) => {
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => addVideoStream(video, userVideoStream));
-};
-
-const handleUserConnected = (userId, stream) => {
-  const call = meetPeer.call(userId, stream);
-  call.on("close", () => video.remove());
-  peers[userId] = call;
-};
-
-socket.on("user-disconnected", (userId) => {
-  if (peers[userId]) peers[userId].close();
-});
-
-meetPeer.on("open", (id) => {
-  socket.emit("join-channel", CHANNEL_ID, id);
-});
-
-async function initializeMedia() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    addVideoStream(meetVideo, stream);
-
-    meetPeer.on("call", (call) => {
-      call.answer(stream);
-      handleCall(call, stream);
+  registerSocketEvents() {
+    this.socket.on("user-disconnected", (userId) => {
+      if (this.peers[userId]) this.peers[userId].close();
     });
 
-    socket.on("user-connected", (userId) => handleUserConnected(userId, stream));
-  } catch (error) {
-    console.error("Error accessing media devices:", error);
+    this.meetPeer.on("open", (id) => {
+      this.socket.emit("join-channel", CHANNEL_ID, id);
+    });
+  }
+
+  async initializeMedia() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      this.addVideoStream(this.meetVideo, stream);
+
+      this.meetPeer.on("call", (call) => {
+        call.answer(stream);
+        this.handleCall(call, stream);
+      });
+
+      this.socket.on("user-connected", (userId) => this.handleUserConnected(userId, stream));
+    } catch (error) {
+      console.error("Error accessing media devices:", error);
+    }
+  }
+
+  handleUserConnected(userId, stream) {
+    const call = this.meetPeer.call(userId, stream);
+    call.on("close", () => this.meetVideo.remove());
+    this.peers[userId] = call;
+  }
+
+  handleCall(call, stream) {
+    const video = this.createVideoElement();
+    call.on("stream", (userVideoStream) => this.addVideoStream(video, userVideoStream));
+  }
+
+  addVideoStream(video, stream) {
+    video.srcObject = stream;
+    video.addEventListener("loadedmetadata", () => video.play());
+    this.videoGrid.append(video);
+  }
+
+  createVideoElement(muted = false) {
+    const video = document.createElement("video");
+    video.muted = muted;
+    return video;
   }
 }
 
-initializeMedia();
-
+// Create a new VideoChat instance
+new VideoChat();

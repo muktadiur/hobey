@@ -1,19 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Hobey: Video Messaging</title>
-    <link rel="stylesheet" href="main.css">
-    <script>
-        const CHANNEL_ID = "<%= channelId %>";
-    </script>
-    <script async src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
-    <script async src="/socket.io/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <script async src="script.js"></script>
-</head>
+<%- include("head.ejs") %>
+
 <body>
     <div class="container">
         
@@ -27,5 +13,12 @@
         
         <div id="video-container"></div>
     </div>
+    <script>
+        const CHANNEL_ID = "<%= channelId %>";
+    </script>
+    <script defer src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
+    <script defer src="/socket.io/socket.io.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script defer src="script.js"></script>
 </body>
 </html>
